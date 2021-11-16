@@ -13,7 +13,7 @@ engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[0].id)
 
-
+light = "OFF"
 
 def takeCommand():
      
@@ -44,15 +44,23 @@ def speak(audio):
 
 def turnonlight():
     print("Lights turned on !") 
+    global light
+    light = "ON"
 
 def turnofflight():
     print("Lights turned off !") 
+    global light
+    light = "OFF"
 
 def dimlight():
     print("Lights dimmed !") 
+    global light
+    light = "DIM"
 
 def brightenlight():
     print("Lights brightened !") 
+    global light
+    light = "BRIGHT"
  
 
 
@@ -95,7 +103,7 @@ if __name__ == '__main__':
         # elif "weather" in command:
         url = "https://community-open-weather-map.p.rapidapi.com/weather"
         # speak("Please speak the city name")
-        city = 'Mumbai'
+        city = 'Pune'
         print(city)
         querystring = {"q":city+",in","lat":"0","lon":"0","id":"2172797","lang":"null","units":"metric","mode":"JSON"}      
         headers = {
@@ -111,15 +119,19 @@ if __name__ == '__main__':
             x = json.loads(x)
             print(f"The weather in {city} is {x['weather'][0]['main']}, the temperature is {x['main']['temp']} and it feels like {x['main']['feels_like']} as the temperature ranges from {x['main']['temp_min']} to {x['main']['temp_max']} with humidity of {x['main']['humidity']}")
             # speak(f"The weather in {city} is {x['weather'][0]['main']}, the temperature is {x['main']['temp']} and it feels like {x['main']['feels_like']} as the temperature ranges from {x['main']['temp_min']} to {x['main']['temp_max']} with humidity of {x['main']['humidity']}")
-            if(x['weather'][0]['main'] == "Clouds"):
+            if(x['weather'][0]['main'] == "Clouds" and light != "ON"):
                 turnonlight()
-            elif(x['weather'][0]['main'] == "Clear"):
+            elif(x['weather'][0]['main'] == "Clear" and light != "OFF"):
                 turnofflight()
-            elif(x['weather'][0]['main'] == "Haze"):
+            elif(x['weather'][0]['main'] == "Smoke" or x['weather'][0]['main'] == "Mist" and light != "BRIGHT"):
                 brightenlight()
+            elif(x['weather'][0]['main'] == "Haze" and light != "DIM"):
+                dimlight()
+            else:
+                print("Light settings already adjusted")
         except:
             speak("Unable to fetch weather details")
-        dt = datetime.now() + timedelta(seconds=10)
+        dt = datetime.now() + timedelta(seconds=300)
         # dt = dt.replace(minute=10)
         count = 1
         while datetime.now() < dt:
