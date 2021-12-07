@@ -13,7 +13,7 @@ engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[0].id)
 
-light = "OFF"
+light = "ON"
 
 def takeCommand():
      
@@ -117,6 +117,7 @@ if __name__ == '__main__':
         # print(response.text)
             x = response.text
             x = json.loads(x)
+            x['weather'][0]['main'] = "Clear"
             print(f"The weather in {city} is {x['weather'][0]['main']}, the temperature is {x['main']['temp']} and it feels like {x['main']['feels_like']} as the temperature ranges from {x['main']['temp_min']} to {x['main']['temp_max']} with humidity of {x['main']['humidity']}")
             # speak(f"The weather in {city} is {x['weather'][0]['main']}, the temperature is {x['main']['temp']} and it feels like {x['main']['feels_like']} as the temperature ranges from {x['main']['temp_min']} to {x['main']['temp_max']} with humidity of {x['main']['humidity']}")
             if(x['weather'][0]['main'] == "Clouds" and light != "ON"):
